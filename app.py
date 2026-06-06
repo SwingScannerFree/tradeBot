@@ -5,33 +5,6 @@ from swing_engine import run_screener
 
 st.set_page_config(page_title="SwingBot Mobile", layout="wide")
 
-# ------------------------------------------------
-# REMOVE STREAMLIT FOOTER + GITHUB USERNAME BADGE
-# ------------------------------------------------
-st.markdown("""
-<style>
-
-/* Hide classic Streamlit footer */
-footer {visibility: hidden !important;}
-footer * {visibility: hidden !important;}
-
-/* Hide Streamlit Cloud GitHub attribution badge (new UI container) */
-[data-testid="stDecoration"] {display: none !important;}
-[data-testid="stStatusWidget"] {display: none !important;}
-
-/* Hide any container that contains a GitHub link */
-a[href*="github.com"] {display: none !important;}
-a[href*="github.com"] * {display: none !important;}
-
-/* Hide any container that mentions your username */
-div:contains("anatoli") {display: none !important;}
-
-/* Hide any remaining footer elements */
-[data-testid="stFooter"] {display: none !important;}
-
-</style>
-""", unsafe_allow_html=True)
-
 # -------------------------------
 # MAIN APP
 # -------------------------------
