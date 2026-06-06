@@ -8,7 +8,7 @@ st.set_page_config(page_title="SwingScreener", layout="wide")
 # -------------------------------
 # MAIN APP
 # -------------------------------
-st.title("SwingBot Mobile")
+st.title("SwingScan Free")
 st.caption("Free swing trading screener —  no login required.")
 
 if st.button("Run Scan"):
