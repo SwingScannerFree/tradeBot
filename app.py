@@ -21,3 +21,19 @@ if st.button("Run Scan"):
                 st.markdown(r["reasoning"])
 else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
+
+# -------------------------------
+# AMAZON AFFILIATE FOOTER (BOTTOM)
+# -------------------------------
+
+st.markdown("""
+<hr>
+
+<div style="text-align:center;">
+    <a href="https://www.amazon.com/?tag=swingbot00-20" target="_blank">
+        <img src="https://m.media-amazon.com/images/G/01/associates-network/amazon-logo._CB485936611_.png" width="160">
+    </a>
+    <p><strong>As an Amazon Associate I earn from qualifying purchases.</strong></p>
+</div>
+
+""", unsafe_allow_html=True)
