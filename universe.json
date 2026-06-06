@@ -1,6 +1,5 @@
-{
-  "tickers": [
-        "HLN","EC","NXE","COMP","SOUN","PK","GENI","FLO","BKD","AGNC","RITM","QUBT","ONDS","QS","LCID","MBLY","YMM","XRAY","PBR/A","STLA","AVTR","TAL","BTDR",
+[
+    "HLN","EC","NXE","COMP","SOUN","PK","GENI","FLO","BKD","AGNC","RITM","QUBT","ONDS","QS","LCID","MBLY","YMM","XRAY","PBR/A","STLA","AVTR","TAL","BTDR",
     "CLSK","CX","FRSH","VLY","MODG","OCUL","PBR","APLE","SAN","VTRS","FLG","OBDC","HE","WULF","RXO","COLD","ASAN","EOSE","TU","UEC","PSKY","AVPT","RELY",
     "VALE","F","VOD","CLF","EQX","DJT","DX","RIOT","JBS","FOLD","STUB","JOBY","PR","SBSW","S","STNE","AES","OSCR","GPK","OI","OWL","DBRG","AAL","ARMN",
     "PATH","WVE","MUFG","CORZ","AG","BEKE","PONY","XP","PRMB","DOC","IAG","NAVN","PCG","SMR","NOV","ET","UUUU","ASX","NTSK","HR","NU","FNB","CAG","ACI",
@@ -133,7 +132,4 @@
     "ENS","ICLR","RDDT","VLO","EGP","GATX","ITT","CR","MS","SBAC","AXSM","IAI","MOD","VOE","AVY","VRT","DGX","VPU","MRSH","LDOS","WELL","ROST","CRAI","THC","URTH","APPF","SCCO","AEM","NVDA","R","SPG","CTAS","FIVE","LGND","SNOW","IWN","COIN","HSY","CHRW","PPLT","HUM","BR","TMUS","RSP","IYW","IEX",
     "RH","ALL","DRI","VOX","VTV","ZS","RTX","TRGP","SAP","UHS","EFX","DOV","GRMN","VFMO","DKS","ONTO","MORN","QUAL","TKO","JBHT","RGA","BDX","EXP","EA","VEEV","GPOR","DASH","WSM","AN","BWXT","CHTR","GTLS","PGR","HWM","SPXC","EPAM","IT","AMR","VOOV","CRL","LNG","COHR","CRM","NXST","FBT","SAM",
     "NUGT","VXF","CAH","UNF","RSG","TXN","KEYS","IVE","VRSK","VSEC","DHR","COF","MTSI","VLU","IWD","TTWO","MTB","WM","PKG","TEL","FTEC","ABBV","VBR","PNC","AME","VIG","VAW","FSLR","ASND","NXPI","TM","VDC","JNJ","HON","SPXL","WAB","IQV","WST","NTRA","WDFC","ITA","LRCX","BA","FNV","ZBRA","UNP",
-    "JNUG","MKSI","QTEC","AMD","JBL","AMZN","TER","VRSN","VTWG","ADP","WDC"
-
-  ]
-}
+    "JNUG","MKSI","QTEC","AMD","JBL","AMZN","TER","VRSN","VTWG","ADP","WDC"]
