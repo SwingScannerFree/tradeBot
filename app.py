@@ -23,7 +23,7 @@ else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
 
 # -------------------------------
-# CUSTOM AMAZON AFFILIATE BANNER
+# AMAZON DEALS AFFILIATE BANNER
 # -------------------------------
 
 st.markdown("""
@@ -36,9 +36,9 @@ st.markdown("""
     border-radius:6px;
     text-align:center;
 ">
-    <a href="https://www.amazon.com/?tag=swingbot00-20" target="_blank" style="text-decoration:none;">
+    <a href="https://www.amazon.com/deals?tag=swingbot00-20" target="_blank" style="text-decoration:none;">
         <div style="color:white; font-size:22px; font-weight:700;">
-            Shop on Amazon
+            Amazon Deals
         </div>
         <div style="color:#FF9900; font-size:16px; margin-top:4px;">
             Support SwingBot at no extra cost
@@ -50,3 +50,4 @@ st.markdown("""
     <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
 </p>
 """, unsafe_allow_html=True)
+
