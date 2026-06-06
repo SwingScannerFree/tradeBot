@@ -3,16 +3,16 @@
 import streamlit as st
 from swing_engine import run_screener
 
-st.set_page_config(page_title="SwingBot Mobile", layout="wide")
+st.set_page_config(page_title="SwingScreener", layout="wide")
 
 # -------------------------------
 # MAIN APP
 # -------------------------------
 st.title("SwingBot Mobile")
-st.caption("Free swing trading screener — weekly universe — no login required.")
+st.caption("Free swing trading screener —  no login required.")
 
 if st.button("Run Scan"):
-    with st.spinner("Scanning universe..."):
+    with st.spinner("Analyzing a universe of over 4,000 stocks for high‑probability swing setup..."):
         results = run_screener()
 
     if not results:
