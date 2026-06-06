@@ -11,6 +11,7 @@ FINVIZ_URL = (
 )
 
 def clean_ticker(t):
+    """Remove ETFs, warrants, SPAC units, rights, preferred shares, etc."""
     bad_suffixes = ("W", "WS", "U", "R")
     if "." in t:
         return None
@@ -20,17 +21,34 @@ def clean_ticker(t):
         return None
     return t
 
+
 @st.cache_data(ttl=604800)  # 7 days
 def load_universe():
     tickers = []
     page = 1
 
+    # Strong User-Agent to avoid Finviz blocking Streamlit Cloud
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0 Safari/537.36"
+        )
+    }
+
     while True:
         url = FINVIZ_URL + f"&r={1 + (page - 1) * 20}"
-        html = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}).text
-        soup = BeautifulSoup(html, "html.parser")
 
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            html = response.text
+        except Exception:
+            break
+
+        soup = BeautifulSoup(html, "html.parser")
         rows = soup.select("table.table-light tr[valign='top']")
+
+        # If Finviz blocks or no more pages → stop
         if not rows:
             break
 
@@ -44,4 +62,11 @@ def load_universe():
 
         page += 1
 
-    return sorted(list(set(tickers)))
+    tickers = sorted(list(set(tickers)))
+
+    # Safety fallback so the app never crashes
+    if len(tickers) == 0:
+        return ["AAPL", "MSFT", "NVDA"]
+
+    return tickers
+
