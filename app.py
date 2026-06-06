@@ -29,11 +29,9 @@ else:
 st.markdown("""
 <hr>
 
-<div style="text-align:center;">
-    <a href="https://www.amazon.com/?tag=swingbot00-20" target="_blank">
-        <img src="https://m.media-amazon.com/images/G/01/associates-network/amazon-logo._CB485936611_.png" width="160">
-    </a>
-    <p><strong>As an Amazon Associate I earn from qualifying purchases.</strong></p>
-</div>
+<a href="https://www.amazon.com/?tag=swingbot00-20" target="_blank">
+    <img src="https://m.media-amazon.com/images/G/01/AUIClients/AmazonUIBaseCSS-amazonlogo._CB485936611_.png" width="100%">
+</a>
 
+<p style="text-align:center;"><strong>As an Amazon Associate I earn from qualifying purchases.</strong></p>
 """, unsafe_allow_html=True)
