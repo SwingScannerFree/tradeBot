@@ -3,11 +3,19 @@
 import streamlit as st
 from swing_engine import run_screener
 st.markdown("""
-    <style>
-        [data-testid="stFooter"] {visibility: hidden;}
-        footer {visibility: hidden;}
-    </style>
+<style>
+/* Hide Streamlit Cloud "Created by" footer */
+footer {visibility: hidden !important;}
+footer * {visibility: hidden !important;}
+
+/* Hide the GitHub username badge container */
+[data-testid="stAppViewContainer"] + div {display: none !important;}
+
+/* Hide any remaining Streamlit footer elements */
+[data-testid="stFooter"] {display: none !important;}
+</style>
 """, unsafe_allow_html=True)
+
 
 
 st.set_page_config(page_title="SwingBot Mobile", layout="wide")
