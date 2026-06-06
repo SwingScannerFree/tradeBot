@@ -23,15 +23,30 @@ else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
 
 # -------------------------------
-# AMAZON AFFILIATE FOOTER (BOTTOM)
+# CUSTOM AMAZON AFFILIATE BANNER
 # -------------------------------
 
 st.markdown("""
 <hr>
 
-<a href="https://www.amazon.com/?tag=swingbot00-20" target="_blank">
-    <img src="https://m.media-amazon.com/images/G/01/AUIClients/AmazonUIBaseCSS-amazonlogo._CB485936611_.png" width="100%">
-</a>
+<div style="
+    width:100%;
+    background:#232F3E;
+    padding:18px 0;
+    border-radius:6px;
+    text-align:center;
+">
+    <a href="https://www.amazon.com/?tag=swingbot00-20" target="_blank" style="text-decoration:none;">
+        <div style="color:white; font-size:22px; font-weight:700;">
+            Shop on Amazon
+        </div>
+        <div style="color:#FF9900; font-size:16px; margin-top:4px;">
+            Support SwingBot at no extra cost
+        </div>
+    </a>
+</div>
 
-<p style="text-align:center;"><strong>As an Amazon Associate I earn from qualifying purchases.</strong></p>
+<p style="text-align:center; margin-top:10px;">
+    <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
+</p>
 """, unsafe_allow_html=True)
