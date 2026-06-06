@@ -2,6 +2,13 @@
 
 import streamlit as st
 from swing_engine import run_screener
+st.markdown("""
+    <style>
+        [data-testid="stFooter"] {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
 
 st.set_page_config(page_title="SwingBot Mobile", layout="wide")
 
