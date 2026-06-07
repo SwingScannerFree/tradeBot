@@ -7,7 +7,7 @@ st.set_page_config(page_title="SwingScan Free", layout="wide")
 # MAIN APP
 # -------------------------------
 st.title("SwingScan Free")
-st.caption("Free swing trading screener — no login required.")
+st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
 if st.button("Run Scan"):
     with st.spinner("Analyzing a universe of over 4,000 stocks for high‑probability swing setups..."):
