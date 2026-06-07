@@ -6,14 +6,11 @@ import numpy as np
 import streamlit as st
 
 # ============================================================
-# 0. UNIVERSE (LOCAL + FINVIZ MERGED)
+# 0. UNIVERSE (LOCAL ONLY — NO FINVIZ)
 # ============================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_UNIVERSE_FILE = os.path.join(BASE_DIR, "universe.json")
-
-from finviz_universe import get_universe as get_finviz_universe
-
 
 def load_local_universe():
     if not os.path.exists(LOCAL_UNIVERSE_FILE):
@@ -30,28 +27,20 @@ def load_local_universe():
         else:
             tickers = []
 
-        tickers = [t.upper() for t in tickers if isinstance(t, str) and t.isalpha()]
-        return tickers
+        return [t.upper() for t in tickers if isinstance(t, str)]
     except Exception:
         return []
 
-
-def combine_universes():
-    local = load_local_universe()
-    finviz = get_finviz_universe()
-
-    finviz_clean = [t.upper() for t in finviz if isinstance(t, str) and t.isalpha()]
-    merged = sorted(set(local) | set(finviz_clean))
-    return merged
+def get_universe():
+    return load_local_universe()
 
 
 # ============================================================
-# 1. DATA LOAD
+# 1. DATA LOAD (YFINANCE)
 # ============================================================
 
 @st.cache_data(ttl=3600)
 def load_bulk_data(universe):
-    # yfinance multi-ticker daily data
     data = yf.download(
         universe,
         period="6mo",
@@ -60,7 +49,6 @@ def load_bulk_data(universe):
         threads=True
     )
 
-    # Normalize into one DataFrame with symbol column
     frames = []
     for symbol in universe:
         try:
@@ -83,21 +71,19 @@ def load_bulk_data(universe):
     if not frames:
         return pd.DataFrame()
 
-    all_df = pd.concat(frames, ignore_index=True)
-    return all_df
+    return pd.concat(frames, ignore_index=True)
 
 
 # ============================================================
-# 2. INDICATORS (MIRROR BOT)
+# 2. INDICATORS (BOT-ACCURATE)
 # ============================================================
 
-def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
+def add_indicators(df):
     if df.empty:
         return df
 
     df = df.sort_values(["symbol", "datetime"]).reset_index(drop=True)
 
-    # EMA 9/21
     df["ema9"] = df.groupby("symbol")["close"].transform(
         lambda x: x.ewm(span=9, adjust=False).mean()
     )
@@ -105,7 +91,6 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
         lambda x: x.ewm(span=21, adjust=False).mean()
     )
 
-    # VWAP
     df["vwap"] = (
         ((df["high"] + df["low"] + df["close"]) / 3 * df["volume"])
         .groupby(df["symbol"])
@@ -113,7 +98,6 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
         / df["volume"].groupby(df["symbol"]).cumsum()
     )
 
-    # Bollinger upper
     bb = (
         df.groupby("symbol")[["close"]]
           .apply(lambda g: pd.DataFrame({
@@ -124,7 +108,6 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
     )
     df["bb_upper"] = bb["bb_upper"]
 
-    # Avg vol 20, SMA20, SMA50
     df["avg_vol_20"] = df.groupby("symbol")["volume"].transform(
         lambda x: x.rolling(20).mean()
     )
@@ -139,13 +122,12 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ============================================================
-# 3. SIGNAL SCORING (MIRROR BOT)
+# 3. BOT SCORING FUNCTION (0–12)
 # ============================================================
 
-def score_signal(last: pd.Series, prev: pd.Series) -> int:
+def score_signal(last, prev):
     score = 0
 
-    # EMA cross strength
     try:
         cross_strength = (last["ema9"] - last["ema21"]) / last["ema21"]
         if cross_strength > 0.002:
@@ -154,20 +136,18 @@ def score_signal(last: pd.Series, prev: pd.Series) -> int:
             score += 2
         else:
             score += 1
-    except Exception:
+    except:
         pass
 
-    # VWAP strength
     try:
         vwap_strength = (last["close"] - last["vwap"]) / last["vwap"]
         if vwap_strength > 0.01:
             score += 2
         elif vwap_strength > 0.003:
             score += 1
-    except Exception:
+    except:
         pass
 
-    # Volume surge
     try:
         vol_ratio = last["volume"] / last["avg_vol_20"]
         if vol_ratio > 1.8:
@@ -176,20 +156,18 @@ def score_signal(last: pd.Series, prev: pd.Series) -> int:
             score += 2
         elif vol_ratio > 1.2:
             score += 1
-    except Exception:
+    except:
         pass
 
-    # ATR expansion
     try:
         atr_ratio = last["atr14"] / last["close"]
         if atr_ratio > 0.025:
             score += 2
         elif atr_ratio > 0.018:
             score += 1
-    except Exception:
+    except:
         pass
 
-    # Candle quality
     try:
         body = abs(last["close"] - last["open"]) / last["open"]
         rng = (last["high"] - last["low"]) / last["low"]
@@ -197,30 +175,27 @@ def score_signal(last: pd.Series, prev: pd.Series) -> int:
             score += 2
         elif body < 0.015 and rng < 0.025:
             score += 1
-    except Exception:
+    except:
         pass
 
-    # Distance above SMA20
     try:
         sma20_dist = (last["close"] - last["sma20"]) / last["sma20"]
         if sma20_dist > 0.02:
             score += 2
         elif sma20_dist > 0.01:
             score += 1
-    except Exception:
+    except:
         pass
 
     return int(score)
 
 
 # ============================================================
-# 4. SCAN LOGIC (MIRROR BOT RUN_SCAN)
+# 4. BOT SCAN LOGIC (RUN_SCAN MIRROR)
 # ============================================================
 
 def run_screener():
-    universe = combine_universes()
-    st.write(f"Universe size: {len(universe)} tickers")
-
+    universe = get_universe()
     raw_df = load_bulk_data(universe)
     df = add_indicators(raw_df)
 
@@ -244,19 +219,16 @@ def run_screener():
         close = float(last["close"])
         volume = int(last["volume"])
 
-        # Price / volume filters
         if not (5 < close < 250):
             continue
         if volume < 100000:
             continue
 
-        # Candle sanity
-        candle_body = abs(last["close"] - last["open"]) / last["open"]
-        candle_range = (last["high"] - last["low"]) / last["low"]
-        if candle_body > 0.02 or candle_range > 0.03:
+        body = abs(last["close"] - last["open"]) / last["open"]
+        rng = (last["high"] - last["low"]) / last["low"]
+        if body > 0.02 or rng > 0.03:
             continue
 
-        # ATR
         data["tr"] = data["high"] - data["low"]
         data["atr14"] = data["tr"].rolling(14).mean()
         atr = data["atr14"].iloc[-1]
@@ -265,7 +237,6 @@ def run_screener():
 
         last["atr14"] = atr
 
-        # EMA fresh cross
         ema9_prev, ema21_prev = prev["ema9"], prev["ema21"]
         ema9_now, ema21_now = last["ema9"], last["ema21"]
 
@@ -280,26 +251,22 @@ def run_screener():
         if not fresh_cross:
             continue
 
-        # SMA20 rising and price above SMA20
         sma20_now, sma20_prev = last["sma20"], prev["sma20"]
         if any(pd.isna(x) for x in (sma20_now, sma20_prev)):
             continue
         if sma20_now <= sma20_prev or close <= sma20_now:
             continue
 
-        # VWAP
         vwap_now = last["vwap"]
         if pd.isna(vwap_now):
             continue
         above_vwap = (close - vwap_now) / vwap_now > 0.002
 
-        # Bollinger upper
         bb_upper = last["bb_upper"]
         if pd.isna(bb_upper):
             continue
         not_overbought = close < bb_upper * 0.985
 
-        # Volume vs avg
         avg_vol_20 = last["avg_vol_20"]
         if pd.isna(avg_vol_20):
             continue
@@ -309,7 +276,7 @@ def run_screener():
         if confluence < 2:
             continue
 
-        signal_score = score_signal(last, prev)
+        score = score_signal(last, prev)
 
         results.append({
             "symbol": symbol,
@@ -317,24 +284,18 @@ def run_screener():
             "volume": volume,
             "confluence": int(confluence),
             "atr": float(atr),
-            "score": int(signal_score),
+            "score": int(score),
         })
 
-    # Sort by score desc, then price
-    results = sorted(results, key=lambda x: (x["score"], -x["price"]), reverse=True)
-    return results
+    return sorted(results, key=lambda x: x["score"], reverse=True)
 
 
 # ============================================================
-# 5. STREAMLIT UI (CARDS MIRRORING BOT)
+# 5. UI CARD RENDERER
 # ============================================================
 
 def render_results(results):
-    if not results:
-        st.info("No matches today.")
-        return
-
-    st.subheader("SwingBot Signals (App Mirror)")
+    st.subheader("SwingBot Signals")
 
     for r in results:
         symbol = r["symbol"]
@@ -353,19 +314,6 @@ def render_results(results):
 
             st.caption(
                 f"Volume: {vol:,} | Confluence: {conf} "
-                f"(VWAP / Bollinger / Volume filters)"
+                f"(VWAP / Bollinger / Volume)"
             )
-
-
-def main():
-    st.title("SwingBot App — Bot-Mirrored Scanner")
-
-    if st.button("Run Scan"):
-        with st.spinner("Scanning universe..."):
-            results = run_screener()
-        render_results(results)
-
-
-if __name__ == "__main__":
-    main()
 
