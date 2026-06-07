@@ -1,33 +1,6 @@
 import streamlit as st
 from swing_engine import run_screener, render_results
 
-# ============================
-# SIDEBAR FILTERS
-# ============================
-
-st.sidebar.header("Filters")
-
-min_score = st.sidebar.slider(
-    "Minimum Score",
-    min_value=0,
-    max_value=12,
-    value=0,
-    step=1
-)
-
-min_confluence = st.sidebar.slider(
-    "Minimum Confluence",
-    min_value=0,
-    max_value=3,
-    value=0,
-    step=1
-)
-
-show_explanations = st.sidebar.checkbox(
-    "Show Explanations",
-    value=True
-)
-
 st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -------------------------------
