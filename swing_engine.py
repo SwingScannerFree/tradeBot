@@ -191,6 +191,91 @@ def score_signal(last, prev):
 
 
 # ============================================================
+# 3b. EXPLANATION BUILDER
+# ============================================================
+
+def explain_signal(last, prev):
+    reasons = []
+
+    # EMA cross
+    try:
+        if prev["ema9"] < prev["ema21"] and last["ema9"] > last["ema21"]:
+            reasons.append("Fresh EMA9 > EMA21 bullish cross")
+        else:
+            reasons.append("EMA trend is positive but not a fresh cross")
+    except:
+        pass
+
+    # VWAP
+    try:
+        if (last["close"] - last["vwap"]) / last["vwap"] > 0.002:
+            reasons.append("Price is above VWAP (intraday strength)")
+        else:
+            reasons.append("Price is near VWAP (neutral intraday strength)")
+    except:
+        pass
+
+    # Bollinger
+    try:
+        if last["close"] < last["bb_upper"] * 0.985:
+            reasons.append("Not overbought (below Bollinger upper band)")
+        else:
+            reasons.append("Near overbought levels")
+    except:
+        pass
+
+    # Volume
+    try:
+        vol_ratio = last["volume"] / last["avg_vol_20"]
+        if vol_ratio > 1.8:
+            reasons.append("Strong volume surge")
+        elif vol_ratio > 1.4:
+            reasons.append("Moderate volume increase")
+        elif vol_ratio > 1.2:
+            reasons.append("Slight volume increase")
+        else:
+            reasons.append("Volume is normal")
+    except:
+        pass
+
+    # ATR
+    try:
+        atr_ratio = last["atr14"] / last["close"]
+        if atr_ratio > 0.025:
+            reasons.append("ATR expansion (volatility rising)")
+        elif atr_ratio > 0.018:
+            reasons.append("Moderate ATR expansion")
+        else:
+            reasons.append("Low ATR expansion")
+    except:
+        pass
+
+    # Candle quality
+    try:
+        body = abs(last["close"] - last["open"]) / last["open"]
+        rng = (last["high"] - last["low"]) / last["low"]
+        if body < 0.01 and rng < 0.02:
+            reasons.append("Small‑body candle (controlled price action)")
+        elif body < 0.015 and rng < 0.025:
+            reasons.append("Moderate candle size")
+        else:
+            reasons.append("Wide candle (higher risk)")
+    except:
+        pass
+
+    # SMA20 trend
+    try:
+        if last["close"] > last["sma20"] and last["sma20"] > prev["sma20"]:
+            reasons.append("Price above rising SMA20 (trend confirmation)")
+        else:
+            reasons.append("Weak SMA20 trend")
+    except:
+        pass
+
+    return reasons
+
+
+# ============================================================
 # 4. SCAN LOGIC (BOT MIRROR + ETF FILTER + DELISTED FILTER + NAN SAFE)
 # ============================================================
 
@@ -291,6 +376,7 @@ def run_screener():
             continue
 
         score = score_signal(last, prev)
+        explanation = explain_signal(last, prev)
 
         results.append({
             "symbol": symbol,
@@ -299,6 +385,7 @@ def run_screener():
             "confluence": int(confluence),
             "atr": float(atr),
             "score": int(score),
+            "explanation": explanation,
         })
 
     return sorted(results, key=lambda x: x["score"], reverse=True)
@@ -330,4 +417,9 @@ def render_results(results):
                 f"Volume: {vol:,} | Confluence: {conf} "
                 f"(VWAP / Bollinger / Volume)"
             )
+
+            if "explanation" in r and r["explanation"]:
+                st.markdown("**Why this stock was selected:**")
+                for reason in r["explanation"]:
+                    st.markdown(f"- {reason}")
 
