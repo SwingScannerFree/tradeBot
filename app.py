@@ -13,6 +13,16 @@ if st.button("Run Scan"):
     with st.spinner("Analyzing a universe of over 4,000 stocks for high‑probability swing setups..."):
         results = run_screener()
 
+        # -------------------------------
+        # HARD‑WIRED FILTERS
+        # -------------------------------
+
+        # Only show score 7 or better
+        results = [r for r in results if r["score"] >= 7]
+
+        # Only show confluence 2 or better
+        results = [r for r in results if r["confluence"] >= 2]
+
     if not results:
         st.warning("No candidates found.")
     else:
@@ -47,5 +57,3 @@ st.markdown("""
     <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
 </p>
 """, unsafe_allow_html=True)
-
-
