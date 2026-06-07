@@ -191,8 +191,11 @@ def score_signal(last, prev):
 
 
 # ============================================================
-# 4. BOT SCAN LOGIC (RUN_SCAN MIRROR)
+# 4. SCAN LOGIC (BOT MIRROR + ETF FILTER + DELISTED FILTER + NAN SAFE)
 # ============================================================
+
+def is_etf(symbol):
+    return symbol.endswith(("X", "F", "Q")) or symbol in {"SPY", "QQQ", "IWM", "DIA"}
 
 def run_screener():
     universe = get_universe()
@@ -206,15 +209,26 @@ def run_screener():
 
     for symbol, data in df.groupby("symbol"):
 
-        if symbol == "SPY":
+        # ETF filter
+        if is_etf(symbol):
             continue
 
-        data = data.sort_values("datetime")
+        # Skip delisted / empty tickers
+        if data["volume"].isna().all():
+            continue
+        if data["close"].isna().all():
+            continue
+
+        data = data.dropna(subset=["volume", "close", "open", "high", "low"])
         if len(data) < 50:
             continue
 
+        data = data.sort_values("datetime")
         last = data.iloc[-1]
         prev = data.iloc[-2]
+
+        if pd.isna(last["volume"]):
+            continue
 
         close = float(last["close"])
         volume = int(last["volume"])
