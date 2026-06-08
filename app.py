@@ -18,7 +18,7 @@ if st.button("Run Scan"):
         # -------------------------------
 
         # Only show score 7 or better
-        results = [r for r in results if r["score"] >= 7]
+        results = [r for r in results if r["score"] >= 6]
 
         # Only show confluence 2 or better
         results = [r for r in results if r["confluence"] >= 2]
