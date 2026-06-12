@@ -320,7 +320,7 @@ def run_screener():
 
         if not (5 < close < 250):
             continue
-        if volume < 100000:
+        if volume < 500000:
             continue
 
         body = abs(last["close"] - last["open"]) / last["open"]
