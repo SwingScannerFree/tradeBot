@@ -1,5 +1,5 @@
 import streamlit as st
-from swing_engine import run_screener, render_results, get_universe, scan_ticker
+from swing_engine import run_screener, render_results
 
 # -----------------------------------
 # PAGE CONFIG
@@ -14,27 +14,18 @@ st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
 if st.button("Run Scan"):
 
-    # Load universe
-    universe = get_universe()
-    total = len(universe)
-
-    # Progress UI
+    # UI elements for progress
     progress = st.progress(0)
     status = st.empty()
 
-    results = []
-
-    for i, ticker in enumerate(universe):
-
-        # Update UI
+    # Define callback for engine to update UI
+    def update_progress(ticker, i, total):
         percent = int((i + 1) / total * 100)
         progress.progress(percent)
         status.write(f"Scanning {ticker} ({percent}%)")
 
-        # Run your existing ticker scan
-        data = scan_ticker(ticker)
-        if data:
-            results.append(data)
+    # Run the screener with progress callback
+    results = run_screener(progress_callback=update_progress)
 
     # Cleanup UI
     progress.empty()
