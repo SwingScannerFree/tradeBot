@@ -8,9 +8,10 @@ from swing_engine import run_screener, render_results
 st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -------------------------------
-# GOOGLE ANALYTICS 4 (SAFE STREAMLIT LOADER)
+# GOOGLE ANALYTICS 4 LOADER (SAFE)
 # -------------------------------
-components.html(open("ga_loader.html").read(), height=0)
+# Loads ga_loader.html as a full HTML document so <script> tags execute
+components.html(open("ga_loader.html").read(), height=80, scrolling=False)
 
 # -------------------------------
 # MAIN APP
