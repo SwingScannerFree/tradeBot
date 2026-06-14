@@ -14,22 +14,36 @@ st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
 if st.button("Run Scan"):
 
-    # UI elements for progress
+    # UI elements for progress + description
     progress = st.progress(0)
     status = st.empty()
+    description = st.empty()
 
-    # Define callback for engine to update UI
+    # General description shown during the scan
+    description.write(
+        """
+        <div style='font-size:16px; padding:8px 0;'>
+            <strong>SwingScan is analyzing the entire U.S. stock universe…</strong><br>
+            Evaluating trend structure, volatility, volume patterns, VWAP alignment, 
+            Bollinger positioning, and multi‑factor confluence to identify high‑probability swing setups.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Progress callback
     def update_progress(ticker, i, total):
         percent = int((i + 1) / total * 100)
         progress.progress(percent)
-        status.write(f"Scanning {ticker} ({percent}%)")
+        status.write(f"Scanning… {percent}%")
 
-    # Run the screener with progress callback
+    # Run the screener
     results = run_screener(progress_callback=update_progress)
 
     # Cleanup UI
-    progress.empty()
+    description.empty()
     status.empty()
+    progress.empty()
 
     # Filter results
     results = [r for r in results if r["score"] >= 7]
