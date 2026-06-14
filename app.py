@@ -7,7 +7,7 @@ from swing_engine import run_screener, render_results
 st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -----------------------------------
-# GA4 LOADER (GitHub Pages iframe with sandbox permissions)
+# GA4 LOADER (GitHub Pages iframe with full sandbox permissions)
 # -----------------------------------
 st.markdown("""
 <iframe 
@@ -15,7 +15,7 @@ st.markdown("""
     height="0" 
     width="0" 
     style="display:none;"
-    sandbox="allow-scripts allow-same-origin"
+    sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
 ></iframe>
 """, unsafe_allow_html=True)
 
