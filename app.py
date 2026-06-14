@@ -82,7 +82,7 @@ if st.button("RUN SCAN"):
             sign = "+" if change >= 0 else ""
             text = f"{sign}{change:.2f}%"
 
-        yf_url = f"https://tradingview.com/quote/{symbol}"
+        tv_url = f"https://www.tradingview.com/quote/{symbol}"
 
         st.markdown(
             f"<a href='{yf_url}' target='_blank' style='text-decoration:none;'>"
