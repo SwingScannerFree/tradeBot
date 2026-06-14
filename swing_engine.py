@@ -479,7 +479,7 @@ def run_screener(progress_callback=None):
 
 
 # ============================================================
-# 6. UI CARD RENDERER (TradingView Hyperlinks)
+# 6. UI CARD RENDERER (TradingView Hyperlinks + Compact Reasons)
 # ============================================================
 
 def render_results(results):
@@ -516,7 +516,13 @@ def render_results(results):
                 f"(VWAP / Bollinger / Volume)"
             )
 
+            # Compact explanation list (no extra spacing)
             if "explanation" in r and r["explanation"]:
-                st.markdown("**Why this stock was selected:**")
+                st.markdown("**Why this stock was selected:**", unsafe_allow_html=True)
+
+                html_list = "<ul style='margin-top:0; margin-bottom:0; padding-left:20px;'>"
                 for reason in r["explanation"]:
-                    st.markdown(f"- {reason}")
+                    html_list += f"<li style='margin:0; padding:0;'>{reason}</li>"
+                html_list += "</ul>"
+
+                st.markdown(html_list, unsafe_allow_html=True)
