@@ -1,25 +1,10 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from swing_engine import run_screener, render_results
 
 # -------------------------------
 # PAGE CONFIG
 # -------------------------------
 st.set_page_config(page_title="SwingScan Free", layout="wide")
-
-# -------------------------------
-# GOOGLE TAG MANAGER (GTM)
-# -------------------------------
-GTM_CONTAINER = "GTM-T3RMH6RM"
-
-GTM_IFRAME = f"""
-<!-- Google Tag Manager (noscript) -->
-<iframe src="https://www.googletagmanager.com/ns.html?id={GTM_CONTAINER}"
-height="0" width="0" style="display:none;visibility:hidden"></iframe>
-<!-- End Google Tag Manager (noscript) -->
-"""
-
-st.markdown(GTM_IFRAME, unsafe_allow_html=True)
 
 # -------------------------------
 # MAIN APP
