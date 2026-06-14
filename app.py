@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from swing_engine import run_screener, render_results
 
 # -----------------------------------
@@ -7,17 +8,20 @@ from swing_engine import run_screener, render_results
 st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -----------------------------------
-# GA4 LOADER (GitHub Pages iframe with full sandbox permissions)
+# GA4 LOADER (Streamlit component iframe — WORKS on Streamlit Cloud)
 # -----------------------------------
-st.markdown("""
-<iframe 
-    src="https://swingbotscanner.github.io/ga4-loader/" 
-    height="0" 
-    width="0" 
-    style="display:none;"
-    sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
-></iframe>
-""", unsafe_allow_html=True)
+components.html(
+    """
+    <iframe 
+        src="https://swingbotscanner.github.io/ga4-loader/" 
+        height="0" 
+        width="0" 
+        style="display:none;"
+        sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
+    ></iframe>
+    """,
+    height=0,
+)
 
 # -----------------------------------
 # MAIN APP
