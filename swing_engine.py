@@ -479,7 +479,7 @@ def run_screener(progress_callback=None):
 
 
 # ============================================================
-# 6. UI CARD RENDERER
+# 6. UI CARD RENDERER (TradingView Hyperlinks)
 # ============================================================
 
 def render_results(results):
@@ -493,9 +493,20 @@ def render_results(results):
         vol = r["volume"]
         conf = r["confluence"]
 
+        # TradingView link
+        tv_url = f"https://www.tradingview.com/symbols/{symbol}/"
+
         with st.container(border=True):
             cols = st.columns([2, 2, 2, 2])
-            cols[0].markdown(f"**{symbol}**")
+
+            # Symbol becomes a TradingView hyperlink
+            cols[0].markdown(
+                f"<a href='{tv_url}' target='_blank' style='text-decoration:none;'>"
+                f"<strong>{symbol}</strong>"
+                f"</a>",
+                unsafe_allow_html=True
+            )
+
             cols[1].markdown(f"**Score:** {score}")
             cols[2].markdown(f"**Price:** ${price:,.2f}")
             cols[3].markdown(f"**ATR:** {atr:,.2f}")
