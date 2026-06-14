@@ -63,33 +63,34 @@ if st.button("RUN SCAN"):
     else:
         render_results(results)
 
-    # -----------------------------------
-    # RECENT PICK PERFORMANCE (COLOR CODED + YF LINKS)
-    # -----------------------------------
-    st.subheader("Recent Picks Performance")
+# -----------------------------------
+# RECENT PICK PERFORMANCE (COLOR CODED + TRADINGVIEW LINKS)
+# -----------------------------------
+st.subheader("Recent Picks Performance")
 
-    perf = evaluate_pick_performance()
+perf = evaluate_pick_performance()
 
-    for p in perf:
-        symbol = p["symbol"]
-        change = p["change_pct"]
+for p in perf:
+    symbol = p["symbol"]
+    change = p["change_pct"]
 
-        if change is None:
-            color = "gray"
-            text = "no data"
-        else:
-            color = "green" if change >= 0 else "red"
-            sign = "+" if change >= 0 else ""
-            text = f"{sign}{change:.2f}%"
+    if change is None:
+        color = "gray"
+        text = "no data"
+    else:
+        color = "green" if change >= 0 else "red"
+        sign = "+" if change >= 0 else ""
+        text = f"{sign}{change:.2f}%"
 
-        tv_url = f"https://www.tradingview.com/quote/{symbol}"
+    tv_url = f"https://www.tradingview.com/symbols/{symbol}/"
 
-        st.markdown(
-            f"<a href='{yf_url}' target='_blank' style='text-decoration:none;'>"
-            f"<span style='color:{color}; font-size:16px;'><strong>{symbol}</strong> — {text}</span>"
-            f"</a>",
-            unsafe_allow_html=True
-        )
+    st.markdown(
+        f"<a href='{tv_url}' target='_blank' style='text-decoration:none;'>"
+        f"<span style='color:{color}; font-size:16px;'><strong>{symbol}</strong> — {text}</span>"
+        f"</a>",
+        unsafe_allow_html=True
+    )
+
 
 else:
     st.info("Tap 'RUN SCAN' to see current swing candidates.")
