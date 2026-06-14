@@ -64,22 +64,28 @@ if st.button("Run Scan"):
         render_results(results)
 
     # -----------------------------------
-    # RECENT PICK PERFORMANCE
+    # RECENT PICK PERFORMANCE (COLOR CODED, ONE LINE)
     # -----------------------------------
     st.subheader("Recent Picks Performance")
 
     perf = evaluate_pick_performance()
 
     for p in perf:
-        with st.container(border=True):
-            st.markdown(f"**{p['symbol']}** — from {p['entry_date']}")
-            st.write(f"Entry: ${p['entry_price']:.2f}")
+        symbol = p["symbol"]
+        change = p["change_pct"]
 
-            if p["latest_price"]:
-                st.write(f"Latest: ${p['latest_price']:.2f}")
-                st.write(f"Change: {p['change_pct']:.2f}%")
-            else:
-                st.write("No recent price data available.")
+        if change is None:
+            color = "gray"
+            text = "no data"
+        else:
+            color = "green" if change >= 0 else "red"
+            sign = "+" if change >= 0 else ""
+            text = f"{sign}{change:.2f}%"
+
+        st.markdown(
+            f"<span style='color:{color}; font-size:16px;'><strong>{symbol}</strong> — {text}</span>",
+            unsafe_allow_html=True
+        )
 
 else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
