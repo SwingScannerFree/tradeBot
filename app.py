@@ -9,15 +9,15 @@ from swing_engine import (
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
-st.set_page_config(page_title="Swing Scan", layout="wide")
+st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -----------------------------------
 # MAIN APP
 # -----------------------------------
-st.title("Swing Scan")
+st.title("SwingScan Free")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
-if st.button("RUN SCAN"):
+if st.button("Run Scan"):
 
     # UI elements for progress + description
     progress = st.progress(0)
@@ -64,7 +64,7 @@ if st.button("RUN SCAN"):
         render_results(results)
 
     # -----------------------------------
-    # RECENT PICK PERFORMANCE (COLOR CODED, ONE LINE)
+    # RECENT PICK PERFORMANCE (COLOR CODED + YF LINKS)
     # -----------------------------------
     st.subheader("Recent Picks Performance")
 
@@ -82,8 +82,12 @@ if st.button("RUN SCAN"):
             sign = "+" if change >= 0 else ""
             text = f"{sign}{change:.2f}%"
 
+        yf_url = f"https://finance.yahoo.com/quote/{symbol}"
+
         st.markdown(
-            f"<span style='color:{color}; font-size:16px;'><strong>{symbol}</strong> — {text}</span>",
+            f"<a href='{yf_url}' target='_blank' style='text-decoration:none;'>"
+            f"<span style='color:{color}; font-size:16px;'><strong>{symbol}</strong> — {text}</span>"
+            f"</a>",
             unsafe_allow_html=True
         )
 
