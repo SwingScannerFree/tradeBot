@@ -1,17 +1,10 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from swing_engine import run_screener, render_results
 
 # -------------------------------
 # PAGE CONFIG
 # -------------------------------
 st.set_page_config(page_title="SwingScan Free", layout="wide")
-
-# -------------------------------
-# GOOGLE ANALYTICS 4 LOADER (SAFE)
-# -------------------------------
-# Loads ga_loader.html as a full HTML document so <script> tags execute
-components.html(open("ga_loader.html").read(), height=80, scrolling=False)
 
 # -------------------------------
 # MAIN APP
