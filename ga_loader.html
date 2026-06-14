@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- GA4 Loader -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4S05F7N21R"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+
+    /* Your GA4 Measurement ID */
     gtag('config', 'G-4S05F7N21R');
+
+    /* TEMPORARY TEST EVENT */
+    gtag('event', 'test_event', {
+      debug: 'yes',
+      source: 'ga_loader_test'
+    });
   </script>
 </head>
 <body></body>
