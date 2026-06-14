@@ -1,5 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
+components.html("<h1 style='color:red;'>GA LOADER LOADED</h1>", height=60)
 from swing_engine import run_screener, render_results
 
 # -------------------------------
