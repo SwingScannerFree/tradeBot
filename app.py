@@ -4,7 +4,7 @@ from swing_engine import run_screener, render_results
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
-st.set_page_config(page_title="SwingScan Free", layout="wide")
+st.set_page_config(page_title="SwingScan", layout="wide")
 
 # -----------------------------------
 # MAIN APP
@@ -12,7 +12,7 @@ st.set_page_config(page_title="SwingScan Free", layout="wide")
 st.title("SwingScan Free")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
-if st.button("Run Scan"):
+if st.button("RUN SCAN"):
 
     # UI elements for progress + description
     progress = st.progress(0)
