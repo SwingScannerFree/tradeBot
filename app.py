@@ -1,18 +1,23 @@
 import streamlit as st
-from swing_engine import run_screener, render_results
+from swing_engine import (
+    run_screener,
+    render_results,
+    save_picks,
+    evaluate_pick_performance
+)
 
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
-st.set_page_config(page_title="SwingScan", layout="wide")
+st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -----------------------------------
 # MAIN APP
 # -----------------------------------
-st.title("SwingScan")
+st.title("SwingScan Free")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
-if st.button("RUN SCAN"):
+if st.button("Run Scan"):
 
     # UI elements for progress + description
     progress = st.progress(0)
@@ -49,10 +54,31 @@ if st.button("RUN SCAN"):
     results = [r for r in results if r["score"] >= 7]
     results = [r for r in results if r["confluence"] >= 2]
 
+    # Save today's picks
+    save_picks(results)
+
     if not results:
         st.warning("No candidates found.")
     else:
         render_results(results)
+
+    # -----------------------------------
+    # RECENT PICK PERFORMANCE
+    # -----------------------------------
+    st.subheader("Recent Picks Performance")
+
+    perf = evaluate_pick_performance()
+
+    for p in perf:
+        with st.container(border=True):
+            st.markdown(f"**{p['symbol']}** — from {p['entry_date']}")
+            st.write(f"Entry: ${p['entry_price']:.2f}")
+
+            if p["latest_price"]:
+                st.write(f"Latest: ${p['latest_price']:.2f}")
+                st.write(f"Change: {p['change_pct']:.2f}%")
+            else:
+                st.write("No recent price data available.")
 
 else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
@@ -71,16 +97,4 @@ st.markdown("""
     text-align:center;
 ">
     <a href="https://www.amazon.com/deals?tag=swingbot00-20" target="_blank" style="text-decoration:none;">
-        <div style="color:white; font-size:22px; font-weight:700;">
-            Amazon Deals
-        </div>
-        <div style="color:#FF9900; font-size:16px; margin-top:4px;">
-            Support SwingBot at no extra cost
-        </div>
-    </a>
-</div>
-
-<p style="text-align:center; margin-top:10px;">
-    <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
-</p>
-""", unsafe_allow_html=True)
+        <div style="color
