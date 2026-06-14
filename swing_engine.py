@@ -479,7 +479,7 @@ def run_screener(progress_callback=None):
 
 
 # ============================================================
-# 6. UI CARD RENDERER (TradingView Hyperlinks + Compact Reasons)
+# 6. UI CARD RENDERER (TradingView + Compact Layout)
 # ============================================================
 
 def render_results(results):
@@ -497,20 +497,24 @@ def render_results(results):
         tv_url = f"https://www.tradingview.com/symbols/{symbol}/"
 
         with st.container(border=True):
-            cols = st.columns([2, 2, 2, 2])
 
-            # Symbol becomes a TradingView hyperlink
-            cols[0].markdown(
-                f"<a href='{tv_url}' target='_blank' style='text-decoration:none;'>"
-                f"<strong>{symbol}</strong>"
-                f"</a>",
-                unsafe_allow_html=True
-            )
+            # Compact header row (no extra spacing)
+            header_html = f"""
+            <div style='display:flex; justify-content:space-between; align-items:center;
+                        margin:0; padding:0; font-size:16px;'>
+                <div style='width:25%;'>
+                    <a href='{tv_url}' target='_blank' style='text-decoration:none;'>
+                        <strong>{symbol}</strong>
+                    </a>
+                </div>
+                <div style='width:25%;'><strong>Score:</strong> {score}</div>
+                <div style='width:25%;'><strong>Price:</strong> ${price:,.2f}</div>
+                <div style='width:25%;'><strong>ATR:</strong> {atr:,.2f}</div>
+            </div>
+            """
+            st.markdown(header_html, unsafe_allow_html=True)
 
-            cols[1].markdown(f"**Score:** {score}")
-            cols[2].markdown(f"**Price:** ${price:,.2f}")
-            cols[3].markdown(f"**ATR:** {atr:,.2f}")
-
+            # Caption row
             st.caption(
                 f"Volume: {vol:,} | Confluence: {conf} "
                 f"(VWAP / Bollinger / Volume)"
