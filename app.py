@@ -9,15 +9,15 @@ from swing_engine import (
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
-st.set_page_config(page_title="SwingScan Free", layout="wide")
+st.set_page_config(page_title="Swing Scan", layout="wide")
 
 # -----------------------------------
 # MAIN APP
 # -----------------------------------
-st.title("SwingScan Free")
+st.title("Swing Scan")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
-if st.button("Run Scan"):
+if st.button("RUN SCAN"):
 
     # UI elements for progress + description
     progress = st.progress(0)
@@ -28,7 +28,7 @@ if st.button("Run Scan"):
     description.write(
         """
         <div style='font-size:16px; padding:8px 0;'>
-            <strong>SwingScan is analyzing the entire U.S. stock universe…</strong><br>
+            <strong>Swing Scan is analyzing the entire U.S. stock universe…</strong><br>
             Evaluating trend structure, volatility, volume patterns, VWAP alignment, 
             Bollinger positioning, and multi‑factor confluence to identify high‑probability swing setups.
         </div>
@@ -82,7 +82,7 @@ if st.button("Run Scan"):
             sign = "+" if change >= 0 else ""
             text = f"{sign}{change:.2f}%"
 
-        yf_url = f"https://finance.yahoo.com/quote/{symbol}"
+        yf_url = f"https://tradingview.com/quote/{symbol}"
 
         st.markdown(
             f"<a href='{yf_url}' target='_blank' style='text-decoration:none;'>"
@@ -92,7 +92,7 @@ if st.button("Run Scan"):
         )
 
 else:
-    st.info("Tap 'Run Scan' to see today's swing candidates.")
+    st.info("Tap 'RUN SCAN' to see current swing candidates.")
 
 # -----------------------------------
 # AMAZON DEALS AFFILIATE BANNER
