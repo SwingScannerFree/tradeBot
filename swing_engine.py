@@ -479,7 +479,7 @@ def run_screener(progress_callback=None):
 
 
 # ============================================================
-# 6. UI CARD RENDERER (TradingView + Compact Layout + Icon)
+# 6. UI CARD RENDERER (TradingView + Compact Layout)
 # ============================================================
 
 def render_results(results):
@@ -502,25 +502,14 @@ def render_results(results):
             header_html = f"""
             <div style='display:flex; justify-content:space-between; align-items:center;
                         margin:0; padding:0; font-size:16px;'>
-
                 <div style='width:25%;'>
                     <a href='{tv_url}' target='_blank' style='text-decoration:none;'>
-                        <strong>{symbol}</strong> <span style='font-size:14px;'>📈</span>
+                        <strong>{symbol}</strong>
                     </a>
                 </div>
-
-                <div style='width:25%;'>
-                    <strong>Score:</strong> {score}
-                </div>
-
-                <div style='width:25%;'>
-                    <strong>Price:</strong> ${price:,.2f}
-                </div>
-
-                <div style='width:25%;'>
-                    <strong>ATR:</strong> {atr:,.2f}
-                </div>
-
+                <div style='width:25%;'><strong>Score:</strong> {score}</div>
+                <div style='width:25%;'><strong>Price:</strong> ${price:,.2f}</div>
+                <div style='width:25%;'><strong>ATR:</strong> {atr:,.2f}</div>
             </div>
             """
             st.markdown(header_html, unsafe_allow_html=True)
