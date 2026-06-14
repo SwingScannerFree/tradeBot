@@ -1,5 +1,5 @@
-import json
 import os
+import json
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -197,7 +197,6 @@ def score_signal(last, prev):
 def explain_signal(last, prev):
     reasons = []
 
-    # EMA cross
     try:
         if prev["ema9"] < prev["ema21"] and last["ema9"] > last["ema21"]:
             reasons.append("Fresh EMA9 > EMA21 bullish cross")
@@ -206,7 +205,6 @@ def explain_signal(last, prev):
     except:
         pass
 
-    # VWAP
     try:
         if (last["close"] - last["vwap"]) / last["vwap"] > 0.002:
             reasons.append("Price is above VWAP (intraday strength)")
@@ -215,7 +213,6 @@ def explain_signal(last, prev):
     except:
         pass
 
-    # Bollinger
     try:
         if last["close"] < last["bb_upper"] * 0.985:
             reasons.append("Not overbought (below Bollinger upper band)")
@@ -224,7 +221,6 @@ def explain_signal(last, prev):
     except:
         pass
 
-    # Volume
     try:
         vol_ratio = last["volume"] / last["avg_vol_20"]
         if vol_ratio > 1.8:
@@ -238,7 +234,6 @@ def explain_signal(last, prev):
     except:
         pass
 
-    # ATR
     try:
         atr_ratio = last["atr14"] / last["close"]
         if atr_ratio > 0.025:
@@ -250,7 +245,6 @@ def explain_signal(last, prev):
     except:
         pass
 
-    # Candle quality
     try:
         body = abs(last["close"] - last["open"]) / last["open"]
         rng = (last["high"] - last["low"]) / last["low"]
@@ -263,7 +257,6 @@ def explain_signal(last, prev):
     except:
         pass
 
-    # SMA20 trend
     try:
         if last["close"] > last["sma20"] and last["sma20"] > prev["sma20"]:
             reasons.append("Price above rising SMA20 (trend confirmation)")
@@ -276,14 +269,17 @@ def explain_signal(last, prev):
 
 
 # ============================================================
-# 4. SCAN LOGIC (BOT MIRROR + ETF FILTER + DELISTED FILTER + NAN SAFE)
+# 4. SCAN LOGIC (NOW WITH PROGRESS CALLBACK SUPPORT)
 # ============================================================
 
 def is_etf(symbol):
     return symbol.endswith(("X", "F", "Q")) or symbol in {"SPY", "QQQ", "IWM", "DIA"}
 
-def run_screener():
+
+def run_screener(progress_callback=None):
     universe = get_universe()
+    total = len(universe)
+
     raw_df = load_bulk_data(universe)
     df = add_indicators(raw_df)
 
@@ -292,13 +288,20 @@ def run_screener():
     if df.empty:
         return []
 
-    for symbol, data in df.groupby("symbol"):
+    for i, symbol in enumerate(universe):
 
-        # ETF filter
+        # --- NEW: progress callback ---
+        if progress_callback:
+            progress_callback(symbol, i, total)
+
+        if symbol not in df["symbol"].unique():
+            continue
+
+        data = df[df["symbol"] == symbol].copy()
+
         if is_etf(symbol):
             continue
 
-        # Skip delisted / empty tickers
         if data["volume"].isna().all():
             continue
         if data["close"].isna().all():
@@ -422,4 +425,3 @@ def render_results(results):
                 st.markdown("**Why this stock was selected:**")
                 for reason in r["explanation"]:
                     st.markdown(f"- {reason}")
-
