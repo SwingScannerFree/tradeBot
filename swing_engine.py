@@ -404,7 +404,7 @@ def run_screener(progress_callback=None):
         close = float(last["close"])
         volume = int(last["volume"])
 
-        if not (5 < close < 250):
+        if not (5 < close < 550):
             continue
         if volume < 500000:
             continue
