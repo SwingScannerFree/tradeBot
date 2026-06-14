@@ -38,14 +38,14 @@ def get_universe():
 
 
 # ============================================================
-# 1. DATA LOAD (YFINANCE)
+# 1. DATA LOAD (YFINANCE) — TURBO CACHED
 # ============================================================
 
-@st.cache_data(ttl=3600)
+@st.cache_data(show_spinner=False, ttl=3600, max_entries=1)
 def load_bulk_data(universe):
     data = yf.download(
         universe,
-        period="6mo",
+        period="3mo",          # Turbo: 3 months is enough for all indicators
         interval="1d",
         group_by="ticker",
         threads=True
@@ -296,7 +296,7 @@ def load_recent_picks():
         return json.load(f)
 
 
-RETENTION_DAYS = 7  # keep picks for 7 days
+RETENTION_DAYS = 7
 
 def evaluate_pick_performance():
     data = load_recent_picks()
@@ -307,24 +307,32 @@ def evaluate_pick_performance():
     cleaned = {}
     results = []
 
+    # Batch download for turbo speed
+    all_symbols = []
     for date, picks in data.items():
         try:
             entry_date = datetime.strptime(date, "%Y-%m-%d")
         except:
             continue
+        if entry_date >= cutoff:
+            cleaned[date] = picks
+            all_symbols.extend([p["symbol"] for p in picks])
 
-        if entry_date < cutoff:
-            continue
+    if not all_symbols:
+        return []
 
-        cleaned[date] = picks
+    try:
+        df = yf.download(list(set(all_symbols)), period="5d", group_by="ticker")
+    except:
+        df = {}
 
+    for date, picks in cleaned.items():
         for p in picks:
             symbol = p["symbol"]
             entry = p["price"]
 
             try:
-                df = yf.download(symbol, period="5d", interval="1d")
-                latest = float(df["Close"].iloc[-1])
+                latest = float(df[symbol]["Close"].iloc[-1])
                 change = (latest - entry) / entry * 100
             except:
                 latest = None
@@ -345,7 +353,7 @@ def evaluate_pick_performance():
 
 
 # ============================================================
-# 5. SCAN LOGIC (WITH PROGRESS CALLBACK)
+# 5. SCAN LOGIC (WITH PROGRESS CALLBACK) — TURBO
 # ============================================================
 
 def is_etf(symbol):
@@ -390,9 +398,9 @@ def run_screener(progress_callback=None):
         last = data.iloc[-1]
         prev = data.iloc[-2]
 
-        if pd.isna(last["volume"]):
-            continue
-
+        # -----------------------------------------
+        # EARLY RAW FILTERS (SAFE TURBO BOOST)
+        # -----------------------------------------
         close = float(last["close"])
         volume = int(last["volume"])
 
@@ -400,6 +408,7 @@ def run_screener(progress_callback=None):
             continue
         if volume < 500000:
             continue
+        # -----------------------------------------
 
         body = abs(last["close"] - last["open"]) / last["open"]
         rng = (last["high"] - last["low"]) / last["low"]
