@@ -57,6 +57,7 @@ if st.button("Run Scan"):
     # Save today's picks
     save_picks(results)
 
+    # Display results
     if not results:
         st.warning("No candidates found.")
     else:
@@ -97,4 +98,16 @@ st.markdown("""
     text-align:center;
 ">
     <a href="https://www.amazon.com/deals?tag=swingbot00-20" target="_blank" style="text-decoration:none;">
-        <div style="color
+        <div style="color:white; font-size:22px; font-weight:700;">
+            Amazon Deals
+        </div>
+        <div style="color:#FF9900; font-size:16px; margin-top:4px;">
+            Support SwingBot at no extra cost
+        </div>
+    </a>
+</div>
+
+<p style="text-align:center; margin-top:10px;">
+    <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
+</p>
+""", unsafe_allow_html=True)
