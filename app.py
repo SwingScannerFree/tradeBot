@@ -1,6 +1,24 @@
 import streamlit as st
 from swing_engine import run_screener, render_results
 
+# -------------------------------
+# GOOGLE ANALYTICS (GA4)
+# -------------------------------
+GA_SCRIPT = """
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TKXHMKH4WK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TKXHMKH4WK');
+</script>
+"""
+st.markdown(GA_SCRIPT, unsafe_allow_html=True)
+
+# -------------------------------
+# PAGE CONFIG
+# -------------------------------
 st.set_page_config(page_title="SwingScan Free", layout="wide")
 
 # -------------------------------
