@@ -4,6 +4,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import streamlit as st
+from datetime import datetime
 
 # ============================================================
 # 0. UNIVERSE (LOCAL ONLY — NO FINVIZ)
@@ -11,6 +12,7 @@ import streamlit as st
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_UNIVERSE_FILE = os.path.join(BASE_DIR, "universe.json")
+PICKS_FILE = os.path.join(BASE_DIR, "recent_picks.json")
 
 def load_local_universe():
     if not os.path.exists(LOCAL_UNIVERSE_FILE):
@@ -269,7 +271,64 @@ def explain_signal(last, prev):
 
 
 # ============================================================
-# 4. SCAN LOGIC (NOW WITH PROGRESS CALLBACK SUPPORT)
+# 4. PICK TRACKING
+# ============================================================
+
+def save_picks(picks):
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    if os.path.exists(PICKS_FILE):
+        with open(PICKS_FILE, "r") as f:
+            data = json.load(f)
+    else:
+        data = {}
+
+    data[today] = [{"symbol": r["symbol"], "price": r["price"]} for r in picks]
+
+    with open(PICKS_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+
+def load_recent_picks():
+    if not os.path.exists(PICKS_FILE):
+        return {}
+    with open(PICKS_FILE, "r") as f:
+        return json.load(f)
+
+
+def evaluate_pick_performance():
+    data = load_recent_picks()
+    if not data:
+        return []
+
+    results = []
+
+    for date, picks in data.items():
+        for p in picks:
+            symbol = p["symbol"]
+            entry = p["price"]
+
+            try:
+                df = yf.download(symbol, period="5d", interval="1d")
+                latest = float(df["Close"].iloc[-1])
+                change = (latest - entry) / entry * 100
+            except:
+                latest = None
+                change = None
+
+            results.append({
+                "symbol": symbol,
+                "entry_date": date,
+                "entry_price": entry,
+                "latest_price": latest,
+                "change_pct": change
+            })
+
+    return results
+
+
+# ============================================================
+# 5. SCAN LOGIC (WITH PROGRESS CALLBACK)
 # ============================================================
 
 def is_etf(symbol):
@@ -290,7 +349,6 @@ def run_screener(progress_callback=None):
 
     for i, symbol in enumerate(universe):
 
-        # --- NEW: progress callback ---
         if progress_callback:
             progress_callback(symbol, i, total)
 
@@ -395,7 +453,7 @@ def run_screener(progress_callback=None):
 
 
 # ============================================================
-# 5. UI CARD RENDERER
+# 6. UI CARD RENDERER
 # ============================================================
 
 def render_results(results):
