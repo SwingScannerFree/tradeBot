@@ -9,15 +9,15 @@ from swing_engine import (
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
-st.set_page_config(page_title="SwingScan Free", layout="wide")
+st.set_page_config(page_title="SwingScan", layout="wide")
 
 # -----------------------------------
 # MAIN APP
 # -----------------------------------
-st.title("SwingScan Free")
+st.title("SwingScan")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
-if st.button("Run Scan"):
+if st.button("RUN SCAN"):
 
     # UI elements for progress + description
     progress = st.progress(0)
