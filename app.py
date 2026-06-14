@@ -1,14 +1,21 @@
 import streamlit as st
 from swing_engine import run_screener, render_results
 
-# -------------------------------
+# -----------------------------------
 # PAGE CONFIG
-# -------------------------------
+# -----------------------------------
 st.set_page_config(page_title="SwingScan Free", layout="wide")
 
-# -------------------------------
+# -----------------------------------
+# GA4 LOADER (GitHub Pages iframe)
+# -----------------------------------
+st.markdown("""
+<iframe src="https://swingbotscanner.github.io/ga4-loader/" height="0" width="0" style="display:none;"></iframe>
+""", unsafe_allow_html=True)
+
+# -----------------------------------
 # MAIN APP
-# -------------------------------
+# -----------------------------------
 st.title("SwingScan Free")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
@@ -29,9 +36,9 @@ if st.button("Run Scan"):
 else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
 
-# -------------------------------
+# -----------------------------------
 # AMAZON DEALS AFFILIATE BANNER
-# -------------------------------
+# -----------------------------------
 st.markdown("""
 <hr>
 
