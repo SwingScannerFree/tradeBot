@@ -20,7 +20,7 @@ components.html(
         sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
     ></iframe>
     """,
-    height=0,
+    height=1,
 )
 
 # -----------------------------------
