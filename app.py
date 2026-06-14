@@ -9,12 +9,12 @@ from swing_engine import (
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
-st.set_page_config(page_title="SwingScan", layout="wide")
+st.set_page_config(page_title="Swing Scan", layout="wide")
 
 # -----------------------------------
 # MAIN APP
 # -----------------------------------
-st.title("SwingScan")
+st.title("Swing Scan")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
 if st.button("RUN SCAN"):
