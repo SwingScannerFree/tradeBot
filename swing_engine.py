@@ -4,7 +4,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ============================================================
 # 0. UNIVERSE (LOCAL ONLY — NO FINVIZ)
@@ -271,10 +271,30 @@ def explain_signal(last, prev):
 
 
 # ============================================================
-# 4. PICK TRACKING
+# 4. PICK TRACKING (SAVE, LOAD, RETENTION, PERFORMANCE)
 # ============================================================
 
-from datetime import datetime, timedelta
+def save_picks(picks):
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    if os.path.exists(PICKS_FILE):
+        with open(PICKS_FILE, "r") as f:
+            data = json.load(f)
+    else:
+        data = {}
+
+    data[today] = [{"symbol": r["symbol"], "price": r["price"]} for r in picks]
+
+    with open(PICKS_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+
+def load_recent_picks():
+    if not os.path.exists(PICKS_FILE):
+        return {}
+    with open(PICKS_FILE, "r") as f:
+        return json.load(f)
+
 
 RETENTION_DAYS = 7  # keep picks for 7 days
 
@@ -293,14 +313,11 @@ def evaluate_pick_performance():
         except:
             continue
 
-        # Skip old entries
         if entry_date < cutoff:
             continue
 
-        # Keep fresh entries
         cleaned[date] = picks
 
-        # Evaluate performance
         for p in picks:
             symbol = p["symbol"]
             entry = p["price"]
@@ -321,12 +338,10 @@ def evaluate_pick_performance():
                 "change_pct": change
             })
 
-    # Save cleaned data back to file
     with open(PICKS_FILE, "w") as f:
         json.dump(cleaned, f, indent=4)
 
     return results
-
 
 
 # ============================================================
