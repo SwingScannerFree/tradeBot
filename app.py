@@ -1,5 +1,5 @@
 import streamlit as st
-from swing_engine import run_screener, render_results
+from swing_engine import run_screener, render_results, get_universe, scan_ticker
 
 # -----------------------------------
 # PAGE CONFIG
@@ -13,19 +13,42 @@ st.title("SwingScan Free")
 st.caption("ONLY SHOWING RESULTS WITH A SCORE OF 7 OR BETTER")
 
 if st.button("Run Scan"):
-    with st.spinner("Analyzing a universe of over 4,000 stocks for high‑probability swing setups..."):
-        results = run_screener()
 
-        # Only show score 7 or better
-        results = [r for r in results if r["score"] >= 7]
+    # Load universe
+    universe = get_universe()
+    total = len(universe)
 
-        # Only show confluence 2 or better
-        results = [r for r in results if r["confluence"] >= 2]
+    # Progress UI
+    progress = st.progress(0)
+    status = st.empty()
+
+    results = []
+
+    for i, ticker in enumerate(universe):
+
+        # Update UI
+        percent = int((i + 1) / total * 100)
+        progress.progress(percent)
+        status.write(f"Scanning {ticker} ({percent}%)")
+
+        # Run your existing ticker scan
+        data = scan_ticker(ticker)
+        if data:
+            results.append(data)
+
+    # Cleanup UI
+    progress.empty()
+    status.empty()
+
+    # Filter results
+    results = [r for r in results if r["score"] >= 7]
+    results = [r for r in results if r["confluence"] >= 2]
 
     if not results:
         st.warning("No candidates found.")
     else:
         render_results(results)
+
 else:
     st.info("Tap 'Run Scan' to see today's swing candidates.")
 
